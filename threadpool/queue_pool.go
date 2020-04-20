@@ -16,7 +16,7 @@ func NewQueueThreadPool(poolSize, queueSize int32) *QueueThreadPool {
 	return &QueueThreadPool{
 		ch: make(chan bool, poolSize),
 		workQueue: make(chan func(), queueSize),
-		isClose: make(chan bool, 1),
+		isClose: make(chan bool),
 	}
 }
 
@@ -55,13 +55,12 @@ func (q *QueueThreadPool)Close(){
 	if q.IsClose() {
 		return
 	}
-	q.isClose <- true
+	close(q.isClose)
 }
 
 func (q *QueueThreadPool)IsClose() bool{
 	select {
 	case <- q.isClose:
-		q.isClose <- true
 		return true
 	default:
 		return false

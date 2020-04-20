@@ -1,6 +1,6 @@
 package container
 
-import "github.com/pkg/errors"
+import "errors"
 
 type IntArray []int
 
